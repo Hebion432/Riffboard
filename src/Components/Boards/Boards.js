@@ -21,7 +21,17 @@ function Board() {
     roughCanvas.draw(rect2);
   }, []);
 
-  return <canvas ref={canvasRef} />;
+  const handleBoardMouseDown = (event) => {
+    // yaha se mujhe ye pata chal jaayega maine click kaha kiya tha
+    const clientX = event.clientX;
+    const clientY = event.clientY;
+
+    // ab yaha se mai elements mei inn points ko push karke i will draw them using the help of rough.js
+
+    console.log(clientX, clientY);
+  };
+
+  return <canvas ref={canvasRef} onMouseDown={handleBoardMouseDown} />;
 }
 
 export default Board;
