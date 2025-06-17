@@ -3,8 +3,12 @@ import { createContext } from "react";
 // yaha mujhe toolbar ke items chaiye
 const boardContext = createContext({
   activeToolItem: "",
+  toolActionType: "",
   elements: [],
-  handleToolItemClick: () => {},
+  changeToolHandler: () => {},
+  boardMouseDownHandler: () => {},
+  boardMouseMoveHandler: () => {},
+  boardMouseUpHandler: () => {},
 });
 
 export default boardContext;
