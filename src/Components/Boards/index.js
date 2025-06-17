@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useLayoutEffect, useRef } from "react";
 import rough from "roughjs";
 import boardContext from "../../store/board-context";
 import { TOOL_ACTION_TYPES } from "../../constants";
@@ -22,9 +22,11 @@ function Board() {
     canvas.height = window.innerHeight;
   }, []);
 
+  // METHOD TO DRAW ON CANVAS
   // sare elements ko draw karne ke liye we will make another useEffect
   // every time elements array chnage we will clean the board first and then rerender and draw each item in elements again
-  useEffect(() => {
+  // useLayouutEffect is same as useEffect -> bass dom interaaction mei useLayoutEffect is better
+  useLayoutEffect(() => {
     const canvas = canvasRef.current;
 
     // so that we can clear it in useEffect before rerendring the new items in elements array
