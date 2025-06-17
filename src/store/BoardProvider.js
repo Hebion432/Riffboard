@@ -1,11 +1,8 @@
 import React, { useReducer } from "react";
-import rough from "roughjs/bin/rough";
 
 import boardContext from "./board-context";
 import { BOARD_ACTIONS, TOOL_ACTION_TYPES, TOOL_ITEMS } from "../constants";
-
-//import rough generator so that yahi se direct rough ka element bana ke elements array mei push kare
-const gen = rough.generator();
+import { createRoughtElement } from "../utils/element";
 
 // useReducer ->
 const boardReducer = (state, action) => {
@@ -24,15 +21,15 @@ const boardReducer = (state, action) => {
     case BOARD_ACTIONS.DRAW_DOWN: {
       const { clientX, clientY } = action.payload;
 
-      //new coordinates se ek new item bana ke push in elements array
-      const newElement = {
-        id: state.elements.length,
-        x1: clientX,
-        y1: clientY,
-        x2: clientX,
-        y2: clientY,
-        roughEle: gen.line(clientX, clientY, clientX, clientY),
-      };
+      //new coordinates se ek new item bana ke push in elements array ( made a particular function for it to make element base on tool_item type)
+      const newElement = createRoughtElement(
+        state.elements.length,
+        clientX,
+        clientY,
+        clientX,
+        clientY,
+        { type: state.activeToolItem }
+      );
 
       // yaha mai new elment ko previouse elments ke saath elements array mei daal dunga
       const prevElements = state.elements;
@@ -50,17 +47,17 @@ const boardReducer = (state, action) => {
 
       const index = updatedElements.length - 1; // get the last index
 
-      // and update it's (x2, y2) co-ordinate with the new co-ordinates
-      updatedElements[index].x2 = clientX;
-      updatedElements[index].y2 = clientY;
-
-      // isme bhi update kar de
-      updatedElements[index].roughEle = gen.line(
+      // ye mere paas new Element bann ke aa gaya with the update co-ordinates
+      const newElement = createRoughtElement(
+        index,
         updatedElements[index].x1,
         updatedElements[index].y1,
         clientX,
-        clientY
+        clientY,
+        { type: state.activeToolItem }
       );
+
+      updatedElements[index] = newElement;
 
       return {
         ...state,

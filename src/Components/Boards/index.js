@@ -33,7 +33,7 @@ function Board() {
 
     const roughCanvas = rough.canvas(canvas);
 
-    // and now jab elements change honge i will draw the items of element array
+    // and now jab elements change honge i will draw the items of element array based on the roughtEle ( basically i have given the co-ordinates in roughEle)
     elements.forEach((element) => {
       roughCanvas.draw(element.roughEle);
     });
