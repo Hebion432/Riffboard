@@ -14,14 +14,19 @@ export const createRoughtElement = (id, x1, y1, x2, y2, { type }) => {
     y2,
   };
 
+  // here we can give options
+  let options = {
+    seed: id + 1, // here id can never be zero
+  };
+
   switch (type) {
     case TOOL_ITEMS.LINE: {
-      element.roughEle = gen.line(x1, y1, x2, y2);
+      element.roughEle = gen.line(x1, y1, x2, y2, options);
       return element;
     }
 
     case TOOL_ITEMS.RECTANGLE: {
-      element.roughEle = gen.rectangle(x1, y1, x2 - x1, y2 - y1); // kyuki isme width, height dena hai
+      element.roughEle = gen.rectangle(x1, y1, x2 - x1, y2 - y1, options); // kyuki isme width, height dena hai
       return element;
     }
 
