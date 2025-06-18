@@ -1,17 +1,28 @@
 .container {
-  @apply absolute left-1/2 top-5 px-3 py-2 flex rounded border border-gray-400;
+  @apply absolute left-1/2 top-6 px-6 py-3 flex items-center gap-5 
+         bg-white border border-gray-200 rounded-2xl 
+         shadow-[0_4px_20px_rgba(0,0,0,0.05)] backdrop-blur-sm z-50;
   transform: translateX(-50%);
-  box-shadow: 1px 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .toolItem {
-  @apply flex justify-center items-center text-xl p-3 text-black mr-5 last:mr-0 cursor-pointer;
-}
-
-.toolItem:hover {
-  @apply bg-blue-50 text-gray-700 rounded;
+  @apply relative flex items-center justify-center text-sm font-medium 
+         text-gray-600 px-4 py-2 rounded-xl transition-all duration-200 
+         hover:text-blue-700 hover:bg-blue-50 hover:shadow-inner 
+         active:scale-95 cursor-pointer;
 }
 
 .toolItem.active {
-  @apply bg-blue-200 text-gray-700 rounded;
+  @apply text-white bg-blue-500 shadow-md hover:bg-blue-600;
+}
+
+.toolItem::after {
+  content: "";
+  @apply absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-500 rounded-full 
+         transition-all duration-300;
+  transform: translateX(-50%);
+}
+
+.toolItem:hover::after {
+  @apply w-2/3;
 }

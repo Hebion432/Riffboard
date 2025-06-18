@@ -1,10 +1,10 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 
 import classes from "./index.module.css";
 
 import cx from "classnames"; // to conditionally give class names
 
-import { FaSlash } from "react-icons/fa";
+import { FaArrowRight, FaSlash } from "react-icons/fa";
 import { LuRectangleHorizontal } from "react-icons/lu";
 import { FaRegCircle } from "react-icons/fa";
 import boardContext from "../../store/board-context";
@@ -38,6 +38,14 @@ function Toolbar() {
         onClick={() => changeToolHandler(TOOL_ITEMS.CIRCLE)}
       >
         <FaRegCircle />
+      </div>
+      <div
+        className={cx(classes.toolItem, {
+          [classes.active]: activeToolItem === TOOL_ITEMS.ARROW,
+        })}
+        onClick={() => changeToolHandler(TOOL_ITEMS.ARROW)}
+      >
+        <FaArrowRight />
       </div>
     </div>
   );
