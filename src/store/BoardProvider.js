@@ -19,7 +19,7 @@ const boardReducer = (state, action) => {
 
     // to add new item object in the elment array with the coordinate of the clientX, clientY
     case BOARD_ACTIONS.DRAW_DOWN: {
-      const { clientX, clientY } = action.payload;
+      const { clientX, clientY, stroke, fill } = action.payload;
 
       //new coordinates se ek new item bana ke push in elements array ( made a particular function for it to make element base on tool_item type)
       const newElement = createRoughtElement(
@@ -28,7 +28,7 @@ const boardReducer = (state, action) => {
         clientY,
         clientX,
         clientY,
-        { type: state.activeToolItem }
+        { type: state.activeToolItem, stroke, fill }
       );
 
       // yaha mai new elment ko previouse elments ke saath elements array mei daal dunga
@@ -47,15 +47,15 @@ const boardReducer = (state, action) => {
 
       const index = updatedElements.length - 1; // get the last index
 
+      // abb kyuki maine mouse down pe stroke and fill le liye that from toolbox context by passing through a handler , and i wanted that while i was moving my cursor so instead of passing it again i will keep those value while i am creating the element so that i can get those values from element only
+      const { x1, y1, stroke, fill } = updatedElements[index];
+
       // ye mere paas new Element bann ke aa gaya with the update co-ordinates
-      const newElement = createRoughtElement(
-        index,
-        updatedElements[index].x1,
-        updatedElements[index].y1,
-        clientX,
-        clientY,
-        { type: state.activeToolItem }
-      );
+      const newElement = createRoughtElement(index, x1, y1, clientX, clientY, {
+        type: state.activeToolItem,
+        stroke,
+        fill,
+      });
 
       updatedElements[index] = newElement;
 
@@ -106,8 +106,10 @@ const BoardProvider = ({ children }) => {
   };
 
   // handler for jab mouse click hoga
-  const boardMouseDownHandler = (event) => {
+  const boardMouseDownHandler = (event, toolboxState) => {
     const { clientX, clientY } = event;
+
+    //toolboxState -> so that we can get the stroke, fill property of the tool
 
     // isko dispatchaction se handle karke iss coordinate ka ek rough object bana ke usko elements array mei push kar de
 
@@ -116,6 +118,8 @@ const BoardProvider = ({ children }) => {
       payload: {
         clientX,
         clientY,
+        stroke: toolboxState[boardState.activeToolItem]?.stroke,
+        fill: toolboxState[boardState.activeToolItem]?.fill,
       },
     });
   };

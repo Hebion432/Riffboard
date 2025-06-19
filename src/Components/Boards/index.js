@@ -2,6 +2,7 @@ import { useContext, useEffect, useLayoutEffect, useRef } from "react";
 import rough from "roughjs";
 import boardContext from "../../store/board-context";
 import { TOOL_ACTION_TYPES } from "../../constants";
+import toolboxContext from "../../store/toolbox-context";
 
 function Board() {
   const canvasRef = useRef();
@@ -14,6 +15,10 @@ function Board() {
     boardMouseUpHandler,
     toolActionType,
   } = useContext(boardContext);
+
+  //we are sending the toolbox state from here so that i can get the fill and stroke to cretate the roughEle
+
+  const { toolboxState } = useContext(toolboxContext);
 
   // this use effect will simply set the height and width of the canvas
   useEffect(() => {
@@ -48,7 +53,8 @@ function Board() {
 
   // jaise hi mouse click hoga
   const handleMouseDown = (event) => {
-    boardMouseDownHandler(event); // isme se bascially i will get the co-ordinates ( clientX, clientY)
+    boardMouseDownHandler(event, toolboxState); // isme se bascially i will get the co-ordinates ( clientX, clientY)
+    // and we are also sending the toolBoxState to get the stroke and fill state of a tool
   };
 
   // continuously fires as the mouse cursor moves, providing real-time updates on the cursor’s position.

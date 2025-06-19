@@ -6,19 +6,39 @@ import rough from "roughjs/bin/rough"; // to import gen
 //import rough generator so that yahi se direct rough ka element create kar de based on the parameter it take ( different parameter for each type of tool (line , rectangle ))
 const gen = rough.generator();
 
-export const createRoughtElement = (id, x1, y1, x2, y2, { type }) => {
+export const createRoughtElement = (
+  id,
+  x1,
+  y1,
+  x2,
+  y2,
+  { type, stroke, fill }
+) => {
   const element = {
     id,
     x1,
     y1,
     x2,
     y2,
+    type,
+    stroke,
+    fill,
   };
 
-  // here we can give options
+  // here we can give options jo ham generator ko denge in order to implement the tool with stoke, fill, color
   let options = {
     seed: id + 1, // here id can never be zero
+    fillStyle: "solid", // so that solid color aaye those rough default fill nahi with the transparent linings
   };
+
+  // agar stroke null nahi aaya hai
+  if (stroke) {
+    options.stroke = stroke;
+  }
+
+  if (fill) {
+    options.fill = fill;
+  }
 
   switch (type) {
     case TOOL_ITEMS.LINE: {

@@ -8,16 +8,6 @@ export const TOOL_ITEMS = {
   TEXT: "TEXT",
 };
 
-export const COLORS = {
-  BLACK: "#000000",
-  RED: "#ff0000",
-  GREEN: "#00ff00",
-  BLUE: "#0000ff",
-  ORANGE: "#ffa500",
-  YELLOW: "#ffff00",
-  WHITE: "#ffffff",
-};
-
 export const TOOL_ACTION_TYPES = {
   NONE: "NONE",
   DRAWING: "DRAWING",
@@ -29,5 +19,29 @@ export const BOARD_ACTIONS = {
   DRAW_UP: "DRAW_UP",
   DRAW_MOVE: "DRAW_MOVE",
 };
+
+export const COLORS = {
+  BLACK: "#000000",
+  RED: "#ff0000",
+  GREEN: "#00ff00",
+  BLUE: "#0000ff",
+  ORANGE: "#ffa500",
+  YELLOW: "#ffff00",
+  WHITE: "#ffffff",
+};
+
+export const TOOLBOX_ACTION = {
+  CHANGE_STROKE: "CHANGE_STROKE",
+  CHANGE_FILL: "CHANGE_FILL",
+};
+
+// kisme kisme ye valid hai ( no point of fill in line )
+export const FILL_TOOL_TYPES = [TOOL_ITEMS.RECTANGLE, TOOL_ITEMS.CIRCLE];
+export const STROKE_TOOL_TYPES = [
+  TOOL_ITEMS.LINE,
+  TOOL_ITEMS.ARROW,
+  TOOL_ITEMS.RECTANGLE,
+  TOOL_ITEMS.CIRCLE,
+];
 
 export const ARROW_LENGTH = 20;
