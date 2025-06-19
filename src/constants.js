@@ -33,6 +33,7 @@ export const COLORS = {
 export const TOOLBOX_ACTION = {
   CHANGE_STROKE: "CHANGE_STROKE",
   CHANGE_FILL: "CHANGE_FILL",
+  CHANGE_SIZE: "CHANGE_SIZE",
 };
 
 // kisme kisme ye valid hai ( no point of fill in line )
@@ -44,4 +45,10 @@ export const STROKE_TOOL_TYPES = [
   TOOL_ITEMS.CIRCLE,
 ];
 
+export const SIZE_TOOL_TYPES = [
+  TOOL_ITEMS.LINE,
+  TOOL_ITEMS.ARROW,
+  TOOL_ITEMS.RECTANGLE,
+  TOOL_ITEMS.CIRCLE,
+];
 export const ARROW_LENGTH = 20;

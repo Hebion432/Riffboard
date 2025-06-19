@@ -2,16 +2,23 @@ import React, { useContext } from "react";
 
 import cx from "classnames";
 import classes from "./index.module.css";
-import { COLORS, FILL_TOOL_TYPES, STROKE_TOOL_TYPES } from "../../constants";
+import {
+  COLORS,
+  FILL_TOOL_TYPES,
+  STROKE_TOOL_TYPES,
+  SIZE_TOOL_TYPES,
+} from "../../constants";
 import boardContext from "../../store/board-context";
 import toolboxContext from "../../store/toolbox-context";
 
 const Toolbox = () => {
   const { activeToolItem } = useContext(boardContext); // yaha se mai current tool nikalunga
-  const { toolboxState, changeStroke, changeFill } = useContext(toolboxContext); // yaha se we will take out the initial state of tool.
+  const { toolboxState, changeStroke, changeFill, changeSize } =
+    useContext(toolboxContext); // yaha se we will take out the initial state of tool.
 
   const strokeColor = toolboxState[activeToolItem]?.stroke; // out current tool ke toolboxstate mei se get it's color
   const fillColor = toolboxState[activeToolItem]?.fill; // get the fill color
+  const size = toolboxState[activeToolItem]?.size; // get size
 
   return (
     <div className={classes.container}>
@@ -25,6 +32,7 @@ const Toolbox = () => {
             {Object.keys(COLORS).map((k) => {
               return (
                 <div
+                  key={k}
                   className={cx(classes.colorBox, {
                     [classes.activeColorBox]: strokeColor === COLORS[k],
                   })}
@@ -46,6 +54,7 @@ const Toolbox = () => {
             {Object.keys(COLORS).map((k) => {
               return (
                 <div
+                  key={k}
                   className={cx(classes.colorBox, {
                     [classes.activeColorBox]: fillColor === COLORS[k],
                   })}
@@ -55,6 +64,21 @@ const Toolbox = () => {
               );
             })}
           </div>
+        </div>
+      )}
+
+      {/* this is for size and only give size option agar current tool SIZE_TOOL_TYPE (in constant.js ) mei define hai tabhi */}
+      {SIZE_TOOL_TYPES.includes(activeToolItem) && (
+        <div className={classes.selectOptionContainer}>
+          <div className={classes.toolBoxLabel}>Brush Size</div>
+          <input
+            type="range"
+            min={1} //size of brush
+            max={9}
+            step={1}
+            value={size}
+            onChange={(event) => changeSize(activeToolItem, event.target.value)}
+          />
         </div>
       )}
     </div>

@@ -12,7 +12,7 @@ export const createRoughtElement = (
   y1,
   x2,
   y2,
-  { type, stroke, fill }
+  { type, stroke, fill, size }
 ) => {
   const element = {
     id,
@@ -23,6 +23,7 @@ export const createRoughtElement = (
     type,
     stroke,
     fill,
+    size,
   };
 
   // here we can give options jo ham generator ko denge in order to implement the tool with stoke, fill, color
@@ -38,6 +39,10 @@ export const createRoughtElement = (
 
   if (fill) {
     options.fill = fill;
+  }
+
+  if (size) {
+    options.strokeWidth = size;
   }
 
   switch (type) {

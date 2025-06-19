@@ -19,7 +19,7 @@ const boardReducer = (state, action) => {
 
     // to add new item object in the elment array with the coordinate of the clientX, clientY
     case BOARD_ACTIONS.DRAW_DOWN: {
-      const { clientX, clientY, stroke, fill } = action.payload;
+      const { clientX, clientY, stroke, fill, size } = action.payload;
 
       //new coordinates se ek new item bana ke push in elements array ( made a particular function for it to make element base on tool_item type)
       const newElement = createRoughtElement(
@@ -28,7 +28,7 @@ const boardReducer = (state, action) => {
         clientY,
         clientX,
         clientY,
-        { type: state.activeToolItem, stroke, fill }
+        { type: state.activeToolItem, stroke, fill, size }
       );
 
       // yaha mai new elment ko previouse elments ke saath elements array mei daal dunga
@@ -48,13 +48,14 @@ const boardReducer = (state, action) => {
       const index = updatedElements.length - 1; // get the last index
 
       // abb kyuki maine mouse down pe stroke and fill le liye that from toolbox context by passing through a handler , and i wanted that while i was moving my cursor so instead of passing it again i will keep those value while i am creating the element so that i can get those values from element only
-      const { x1, y1, stroke, fill } = updatedElements[index];
+      const { x1, y1, stroke, fill, size } = updatedElements[index];
 
       // ye mere paas new Element bann ke aa gaya with the update co-ordinates
       const newElement = createRoughtElement(index, x1, y1, clientX, clientY, {
         type: state.activeToolItem,
         stroke,
         fill,
+        size,
       });
 
       updatedElements[index] = newElement;
@@ -120,6 +121,7 @@ const BoardProvider = ({ children }) => {
         clientY,
         stroke: toolboxState[boardState.activeToolItem]?.stroke,
         fill: toolboxState[boardState.activeToolItem]?.fill,
+        size: toolboxState[boardState.activeToolItem]?.size,
       },
     });
   };
