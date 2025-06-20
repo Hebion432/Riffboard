@@ -11,6 +11,7 @@ export const TOOL_ITEMS = {
 export const TOOL_ACTION_TYPES = {
   NONE: "NONE",
   DRAWING: "DRAWING",
+  ERASING: "ERASING",
 };
 
 export const BOARD_ACTIONS = {
@@ -18,6 +19,7 @@ export const BOARD_ACTIONS = {
   DRAW_DOWN: "DRAW_DOWN",
   DRAW_UP: "DRAW_UP",
   DRAW_MOVE: "DRAW_MOVE",
+  ERASE: "ERASE",
 };
 
 export const COLORS = {

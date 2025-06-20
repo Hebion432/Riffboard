@@ -2,7 +2,11 @@ import React, { useReducer } from "react";
 
 import boardContext from "./board-context";
 import { BOARD_ACTIONS, TOOL_ACTION_TYPES, TOOL_ITEMS } from "../constants";
-import { createRoughtElement, getSvgPathFromStroke } from "../utils/element";
+import {
+  createRoughtElement,
+  getSvgPathFromStroke,
+  isPointNearElement,
+} from "../utils/element";
 import getStroke from "perfect-freehand";
 
 // useReducer ->
@@ -33,10 +37,15 @@ const boardReducer = (state, action) => {
       );
 
       // yaha mai new elment ko previouse elments ke saath elements array mei daal dunga
+
+      // if current tool is eraser then change the state to ERASING
       const prevElements = state.elements;
       return {
         ...state,
-        toolActionType: TOOL_ACTION_TYPES.DRAWING, // so that now when the button is clicked i can keep tract of onMouseMove
+        toolActionType:
+          state.activeToolItem === TOOL_ITEMS.ERASER
+            ? TOOL_ACTION_TYPES.ERASING
+            : TOOL_ACTION_TYPES.DRAWING, // so that now when the button is clicked i can keep tract of onMouseMove
         elements: [...prevElements, newElement],
       };
     }
@@ -108,6 +117,23 @@ const boardReducer = (state, action) => {
       };
     }
 
+    //eraser case handle
+    case BOARD_ACTIONS.ERASE: {
+      const { clientX, clientY } = action.payload;
+
+      let newElements = [...state.elements];
+
+      newElements = newElements.filter((element) => {
+        // define in element.js
+        return !isPointNearElement(element, clientX, clientY); // agar wo hamare eraser ke point ke paas hai then we have to delete it
+      });
+
+      return {
+        ...state,
+        element: newElements,
+      };
+    }
+
     default:
       return state;
   }
@@ -164,15 +190,25 @@ const BoardProvider = ({ children }) => {
   const boardMouseMoveHandler = (event) => {
     const { clientX, clientY } = event;
 
-    // isko dispatchaction se handle karke iss coordinate ka ek rough object bana ke usko elements array mei push kar de
-
-    dispatchBoardAction({
-      type: BOARD_ACTIONS.DRAW_MOVE,
-      payload: {
-        clientX,
-        clientY,
-      },
-    });
+    if (boardState.toolActionType === TOOL_ACTION_TYPES.DRAWING) {
+      // isko dispatchaction se handle karke iss coordinate ka ek rough object bana ke usko elements array mei push kar de
+      dispatchBoardAction({
+        type: BOARD_ACTIONS.DRAW_MOVE,
+        payload: {
+          clientX,
+          clientY,
+        },
+      });
+    } else if (boardState.toolActionType === TOOL_ACTION_TYPES.ERASING) {
+      // for erase we will dispatch different action and handle it in reducer
+      dispatchBoardAction({
+        type: BOARD_ACTIONS.ERASE,
+        payload: {
+          clientX,
+          clientY,
+        },
+      });
+    }
   };
 
   // the moment i leave the mouse cursor it should stop updating

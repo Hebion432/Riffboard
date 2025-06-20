@@ -112,6 +112,10 @@ export const createRoughtElement = (
   }
 };
 
+export const isPointNearElement = (element, pointX, pointY) => {
+  return false;
+};
+
 // get from perfect-freehand documentation to draw on given path
 // we will also need this in BoardProvider to update the path
 export const getSvgPathFromStroke = (stroke) => {
