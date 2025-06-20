@@ -20,6 +20,7 @@ export const BOARD_ACTIONS = {
   DRAW_UP: "DRAW_UP",
   DRAW_MOVE: "DRAW_MOVE",
   ERASE: "ERASE",
+  CHANGE_ACTION_TYPE: "CHANGE_ACTION_TYPE",
 };
 
 export const COLORS = {

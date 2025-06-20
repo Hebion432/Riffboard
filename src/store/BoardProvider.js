@@ -22,6 +22,15 @@ const boardReducer = (state, action) => {
       };
     }
 
+    case BOARD_ACTIONS.CHANGE_ACTION_TYPE: {
+      // it will simply change the action type
+
+      return {
+        ...state,
+        toolActionType: action.payload.actionType,
+      };
+    }
+
     // to add new item object in the elment array with the coordinate of the clientX, clientY
     case BOARD_ACTIONS.DRAW_DOWN: {
       const { clientX, clientY, stroke, fill, size } = action.payload;
@@ -42,10 +51,7 @@ const boardReducer = (state, action) => {
       const prevElements = state.elements;
       return {
         ...state,
-        toolActionType:
-          state.activeToolItem === TOOL_ITEMS.ERASER
-            ? TOOL_ACTION_TYPES.ERASING
-            : TOOL_ACTION_TYPES.DRAWING, // so that now when the button is clicked i can keep tract of onMouseMove
+        toolActionType: TOOL_ACTION_TYPES.DRAWING, // so that now when the button is clicked i can keep track of onMouseMove
         elements: [...prevElements, newElement],
       };
     }
@@ -109,14 +115,6 @@ const boardReducer = (state, action) => {
       }
     }
 
-    // for mouse up to stop updating the co-ordinated of (x2, y2) so just chnage the toolactiontype back to none again
-    case BOARD_ACTIONS.DRAW_UP: {
-      return {
-        ...state,
-        toolActionType: TOOL_ACTION_TYPES.NONE,
-      };
-    }
-
     //eraser case handle
     case BOARD_ACTIONS.ERASE: {
       const { clientX, clientY } = action.payload;
@@ -170,10 +168,19 @@ const BoardProvider = ({ children }) => {
   const boardMouseDownHandler = (event, toolboxState) => {
     const { clientX, clientY } = event;
 
+    // if out current item is eraser then we will dispatch different function
+    if (boardState.activeToolItem === TOOL_ITEMS.ERASER) {
+      dispatchBoardAction({
+        type: BOARD_ACTIONS.CHANGE_ACTION_TYPE,
+        payload: {
+          actionType: TOOL_ACTION_TYPES.ERASING,
+        },
+      });
+      return; // aur kuch mat kar ( now we have the eraser clicked )
+    }
+
     //toolboxState -> so that we can get the stroke, fill property of the tool
-
     // isko dispatchaction se handle karke iss coordinate ka ek rough object bana ke usko elements array mei push kar de
-
     dispatchBoardAction({
       type: BOARD_ACTIONS.DRAW_DOWN,
       payload: {
@@ -214,7 +221,10 @@ const BoardProvider = ({ children }) => {
   // the moment i leave the mouse cursor it should stop updating
   const boardMouseUpHandler = () => {
     dispatchBoardAction({
-      type: BOARD_ACTIONS.DRAW_UP,
+      type: BOARD_ACTIONS.CHANGE_ACTION_TYPE,
+      payload: {
+        actionType: TOOL_ACTION_TYPES.NONE,
+      },
     });
   };
 
