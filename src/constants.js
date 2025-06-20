@@ -39,6 +39,7 @@ export const TOOLBOX_ACTION = {
 // kisme kisme ye valid hai ( no point of fill in line )
 export const FILL_TOOL_TYPES = [TOOL_ITEMS.RECTANGLE, TOOL_ITEMS.CIRCLE];
 export const STROKE_TOOL_TYPES = [
+  TOOL_ITEMS.BRUSH,
   TOOL_ITEMS.LINE,
   TOOL_ITEMS.ARROW,
   TOOL_ITEMS.RECTANGLE,

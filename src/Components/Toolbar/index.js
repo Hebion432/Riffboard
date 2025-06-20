@@ -4,9 +4,13 @@ import classes from "./index.module.css";
 
 import cx from "classnames"; // to conditionally give class names
 
-import { FaArrowRight, FaSlash } from "react-icons/fa";
+import {
+  FaArrowRight,
+  FaPaintBrush,
+  FaSlash,
+  FaRegCircle,
+} from "react-icons/fa";
 import { LuRectangleHorizontal } from "react-icons/lu";
-import { FaRegCircle } from "react-icons/fa";
 import boardContext from "../../store/board-context";
 import { TOOL_ITEMS } from "../../constants";
 
@@ -15,6 +19,14 @@ function Toolbar() {
 
   return (
     <div className={classes.container}>
+      <div
+        className={cx(classes.toolItem, {
+          [classes.active]: activeToolItem === TOOL_ITEMS.BRUSH,
+        })}
+        onClick={() => changeToolHandler(TOOL_ITEMS.BRUSH)}
+      >
+        <FaPaintBrush />
+      </div>
       <div
         className={cx(classes.toolItem, {
           [classes.active]: activeToolItem === TOOL_ITEMS.LINE, // here if activeToolitem is A then only add active class

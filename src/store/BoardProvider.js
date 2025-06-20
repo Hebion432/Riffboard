@@ -2,7 +2,8 @@ import React, { useReducer } from "react";
 
 import boardContext from "./board-context";
 import { BOARD_ACTIONS, TOOL_ACTION_TYPES, TOOL_ITEMS } from "../constants";
-import { createRoughtElement } from "../utils/element";
+import { createRoughtElement, getSvgPathFromStroke } from "../utils/element";
+import getStroke from "perfect-freehand";
 
 // useReducer ->
 const boardReducer = (state, action) => {
@@ -48,22 +49,55 @@ const boardReducer = (state, action) => {
       const index = updatedElements.length - 1; // get the last index
 
       // abb kyuki maine mouse down pe stroke and fill le liye that from toolbox context by passing through a handler , and i wanted that while i was moving my cursor so instead of passing it again i will keep those value while i am creating the element so that i can get those values from element only
-      const { x1, y1, stroke, fill, size } = updatedElements[index];
+      const { type } = updatedElements[index]; // isme type bhi lele to make different elements based on tool
 
-      // ye mere paas new Element bann ke aa gaya with the update co-ordinates
-      const newElement = createRoughtElement(index, x1, y1, clientX, clientY, {
-        type: state.activeToolItem,
-        stroke,
-        fill,
-        size,
-      });
+      switch (type) {
+        case TOOL_ITEMS.LINE:
+        case TOOL_ITEMS.RECTANGLE:
+        case TOOL_ITEMS.CIRCLE:
+        case TOOL_ITEMS.ARROW:
+          const { x1, y1, stroke, fill, size } = updatedElements[index]; // isme type bhi lele to make different elements based on tool
+          // ye mere paas new Element bann ke aa gaya with the update co-ordinates in all the above 4 types of tools
+          const newElement = createRoughtElement(
+            index,
+            x1,
+            y1,
+            clientX,
+            clientY,
+            {
+              type: state.activeToolItem,
+              stroke,
+              fill,
+              size,
+            }
+          );
 
-      updatedElements[index] = newElement;
+          updatedElements[index] = newElement;
 
-      return {
-        ...state,
-        elements: updatedElements,
-      };
+          return {
+            ...state,
+            elements: updatedElements,
+          };
+
+        case TOOL_ITEMS.BRUSH:
+          // brush ke case mei we will push all the points in the POINTS array of the element.
+          // yaha points as well as path dono update kar de
+          updatedElements[index].points = [
+            ...updatedElements[index].points,
+            { x: clientX, y: clientY },
+          ];
+          updatedElements[index].path = new Path2D(
+            getSvgPathFromStroke(getStroke(updatedElements[index].points))
+          );
+
+          return {
+            ...state,
+            elements: updatedElements,
+          };
+
+        default:
+          return state;
+      }
     }
 
     // for mouse up to stop updating the co-ordinated of (x2, y2) so just chnage the toolactiontype back to none again

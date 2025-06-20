@@ -1,7 +1,7 @@
 import { useContext, useEffect, useLayoutEffect, useRef } from "react";
 import rough from "roughjs";
 import boardContext from "../../store/board-context";
-import { TOOL_ACTION_TYPES } from "../../constants";
+import { TOOL_ACTION_TYPES, TOOL_ITEMS } from "../../constants";
 import toolboxContext from "../../store/toolbox-context";
 
 function Board() {
@@ -41,8 +41,26 @@ function Board() {
     const roughCanvas = rough.canvas(canvas);
 
     // and now jab elements change honge i will draw the items of element array based on the roughtEle ( basically i have given the co-ordinates in roughEle)
+
     elements.forEach((element) => {
-      roughCanvas.draw(element.roughEle);
+      //now here for brush we won't draw with rough.js
+
+      switch (element.type) {
+        case TOOL_ITEMS.LINE:
+        case TOOL_ITEMS.RECTANGLE:
+        case TOOL_ITEMS.CIRCLE:
+        case TOOL_ITEMS.ARROW:
+          roughCanvas.draw(element.roughEle);
+          break;
+
+        case TOOL_ITEMS.BRUSH:
+          context.fillStyle = element.stroke;
+          context.fill(element.path);
+          context.restore();
+          break;
+        default:
+          throw new Error("Type Not Recognised");
+      }
     });
 
     return () => {

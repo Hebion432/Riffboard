@@ -39,6 +39,9 @@ function toolboxReducer(state, action) {
 const initialToolboxState = {
   // abb isme har tool ka initial state set kar de
 
+  [TOOL_ITEMS.BRUSH]: {
+    stroke: COLORS.BLACK,
+  },
   [TOOL_ITEMS.LINE]: {
     stroke: COLORS.BLACK,
     size: 1,
