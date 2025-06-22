@@ -119,6 +119,7 @@ const boardReducer = (state, action) => {
       newHistory.push(elementsCopy);
 
       return {
+        ...state,
         history: newHistory,
         index: state.index + 1,
       };
@@ -135,9 +136,13 @@ const boardReducer = (state, action) => {
         return !isPointNearElement(element, clientX, clientY); // agar wo hamare eraser ke point ke paas hai then we have to delete it
       });
 
+      const newHistory = state.history.slice(0, state.index + 1);
+      newHistory.push(newElements);
       return {
         ...state,
         elements: newElements,
+        history: newHistory,
+        index: state.index + 1,
       };
     }
 
@@ -153,6 +158,24 @@ const boardReducer = (state, action) => {
         toolActionType: TOOL_ACTION_TYPES.NONE,
         elements: newElements,
         history: newHistory, // history ko update kar de
+        index: state.index + 1,
+      };
+    }
+
+    case BOARD_ACTIONS.UNDO: {
+      if (state.index <= 0) return state;
+      return {
+        ...state,
+        elements: state.history[state.index - 1],
+        index: state.index - 1,
+      };
+    }
+
+    case BOARD_ACTIONS.REDO: {
+      if (state.index >= state.history.length - 1) return state;
+      return {
+        ...state,
+        elements: state.history[state.index + 1],
         index: state.index + 1,
       };
     }
