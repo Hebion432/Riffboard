@@ -7,6 +7,7 @@ import {
   FILL_TOOL_TYPES,
   STROKE_TOOL_TYPES,
   SIZE_TOOL_TYPES,
+  TOOL_ITEMS,
 } from "../../constants";
 import boardContext from "../../store/board-context";
 import toolboxContext from "../../store/toolbox-context";
@@ -70,11 +71,13 @@ const Toolbox = () => {
       {/* this is for size and only give size option agar current tool SIZE_TOOL_TYPE (in constant.js ) mei define hai tabhi */}
       {SIZE_TOOL_TYPES.includes(activeToolItem) && (
         <div className={classes.selectOptionContainer}>
-          <div className={classes.toolBoxLabel}>Brush Size</div>
+          <div className={classes.toolBoxLabel}>
+            {activeToolItem === TOOL_ITEMS.TEXT ? "Font Size" : "Brush Size"}
+          </div>
           <input
             type="range"
-            min={1} //size of brush
-            max={9}
+            min={activeToolItem === TOOL_ITEMS.TEXT ? 18 : 1} //size of brush
+            max={activeToolItem === TOOL_ITEMS.TEXT ? 69 : 9}
             step={1}
             value={size}
             onChange={(event) => changeSize(activeToolItem, event.target.value)}

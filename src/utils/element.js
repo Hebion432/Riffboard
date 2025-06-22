@@ -7,7 +7,7 @@ import rough from "roughjs/bin/rough"; // to import gen
 //import rough generator so that yahi se direct rough ka element create kar de based on the parameter it take ( different parameter for each type of tool (line , rectangle ))
 const gen = rough.generator();
 
-export const createRoughtElement = (
+export const createElement = (
   id,
   x1,
   y1,
@@ -105,6 +105,11 @@ export const createRoughtElement = (
       ];
       element.roughEle = gen.linearPath(points, options);
       return element;
+    }
+
+    case TOOL_ITEMS.TEXT: {
+      element.text = ""; // kyuki starting mei toh empty rahega
+      return element; // aur ye jo element ham create kar rahe hai that we will return
     }
 
     default:

@@ -10,6 +10,7 @@ import {
   FaSlash,
   FaRegCircle,
   FaEraser,
+  FaFont,
 } from "react-icons/fa";
 import { LuRectangleHorizontal } from "react-icons/lu";
 import boardContext from "../../store/board-context";
@@ -67,6 +68,14 @@ function Toolbar() {
         onClick={() => changeToolHandler(TOOL_ITEMS.ERASER)}
       >
         <FaEraser />
+      </div>
+      <div
+        className={cx(classes.toolItem, {
+          [classes.active]: activeToolItem === TOOL_ITEMS.TEXT,
+        })}
+        onClick={() => changeToolHandler(TOOL_ITEMS.TEXT)}
+      >
+        <FaFont />
       </div>
     </div>
   );

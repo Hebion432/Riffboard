@@ -1,11 +1,14 @@
 import { useContext, useEffect, useLayoutEffect, useRef } from "react";
 import rough from "roughjs";
 import boardContext from "../../store/board-context";
-import { TOOL_ITEMS } from "../../constants";
+import { TOOL_ACTION_TYPES, TOOL_ITEMS } from "../../constants";
 import toolboxContext from "../../store/toolbox-context";
+
+import classes from "./index.module.css";
 
 function Board() {
   const canvasRef = useRef();
+  const textAreaRef = useRef();
 
   // and now i will take elements array from context
   const {
@@ -13,6 +16,8 @@ function Board() {
     boardMouseDownHandler,
     boardMouseMoveHandler,
     boardMouseUpHandler,
+    toolActionType,
+    textAreaBlurHandler,
   } = useContext(boardContext);
 
   //we are sending the toolbox state from here so that i can get the fill and stroke to cretate the roughEle
@@ -57,6 +62,15 @@ function Board() {
           context.fill(element.path);
           context.restore();
           break;
+
+        case TOOL_ITEMS.TEXT: // do this if the current tool is a text
+          // if we want the textare content to save on canvas
+          context.textBaseline = "top";
+          context.font = `${element.size}px Caveat`;
+          context.fillStyle = element.stroke;
+          context.fillText(element.text, element.x1, element.y1);
+          context.restore();
+          break;
         default:
           throw new Error("Type Not Recognised");
       }
@@ -67,6 +81,16 @@ function Board() {
       context.clearRect(0, 0, canvas.width, canvas.height);
     };
   }, [elements]);
+
+  useEffect(() => {
+    const textArea = textAreaRef.current;
+
+    if (toolActionType === TOOL_ACTION_TYPES.WRITING) {
+      setTimeout(() => {
+        textArea.focus(); // agar tool writing mei change hua hai then uss tool ko focus kar do
+      }, 0);
+    }
+  }, [toolActionType]);
 
   // jaise hi mouse click hoga
   const handleMouseDown = (event) => {
@@ -86,13 +110,31 @@ function Board() {
   };
 
   return (
-    <canvas
-      ref={canvasRef}
-      id="canvas"
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-    />
+    <>
+      {toolActionType === TOOL_ACTION_TYPES.WRITING && (
+        <textarea
+          type="text"
+          ref={textAreaRef}
+          className={classes.textElementBox}
+          style={{
+            top: elements[elements.length - 1].y1,
+            left: elements[elements.length - 1].x1,
+            fontSize: `${elements[elements.length - 1]?.size}px`,
+            color: elements[elements.length - 1]?.stroke,
+          }} // ye based on maine kaha click kiya tha
+          onBlur={(event) =>
+            textAreaBlurHandler(event.target.value, toolboxState)
+          }
+        />
+      )}
+      <canvas
+        ref={canvasRef}
+        id="canvas"
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+      />
+    </>
   );
 }
 

@@ -3,7 +3,7 @@ import React, { useReducer } from "react";
 import boardContext from "./board-context";
 import { BOARD_ACTIONS, TOOL_ACTION_TYPES, TOOL_ITEMS } from "../constants";
 import {
-  createRoughtElement,
+  createElement,
   getSvgPathFromStroke,
   isPointNearElement,
 } from "../utils/element";
@@ -36,7 +36,7 @@ const boardReducer = (state, action) => {
       const { clientX, clientY, stroke, fill, size } = action.payload;
 
       //new coordinates se ek new item bana ke push in elements array ( made a particular function for it to make element base on tool_item type)
-      const newElement = createRoughtElement(
+      const newElements = createElement(
         state.elements.length,
         clientX,
         clientY,
@@ -51,8 +51,11 @@ const boardReducer = (state, action) => {
       const prevElements = state.elements;
       return {
         ...state,
-        toolActionType: TOOL_ACTION_TYPES.DRAWING, // so that now when the button is clicked i can keep track of onMouseMove
-        elements: [...prevElements, newElement],
+        toolActionType:
+          state.activeToolItem === TOOL_ITEMS.TEXT
+            ? TOOL_ACTION_TYPES.WRITING
+            : TOOL_ACTION_TYPES.DRAWING, // so that now when the button is clicked i can keep track of onMouseMove
+        elements: [...prevElements, newElements],
       };
     }
     // for mouse move
@@ -73,21 +76,14 @@ const boardReducer = (state, action) => {
         case TOOL_ITEMS.ARROW:
           const { x1, y1, stroke, fill, size } = updatedElements[index]; // isme type bhi lele to make different elements based on tool
           // ye mere paas new Element bann ke aa gaya with the update co-ordinates in all the above 4 types of tools
-          const newElement = createRoughtElement(
-            index,
-            x1,
-            y1,
-            clientX,
-            clientY,
-            {
-              type: state.activeToolItem,
-              stroke,
-              fill,
-              size,
-            }
-          );
+          const newElements = createElement(index, x1, y1, clientX, clientY, {
+            type: state.activeToolItem,
+            stroke,
+            fill,
+            size,
+          });
 
-          updatedElements[index] = newElement;
+          updatedElements[index] = newElements;
 
           return {
             ...state,
@@ -132,6 +128,18 @@ const boardReducer = (state, action) => {
       };
     }
 
+    case BOARD_ACTIONS.CHANGE_TEXT: {
+      const index = state.elements.length - 1;
+      const newElements = [...state.elements];
+      newElements[index].text = action.payload.text;
+
+      return {
+        ...state,
+        toolActionType: TOOL_ACTION_TYPES.NONE,
+        elements: newElements,
+      };
+    }
+
     default:
       return state;
   }
@@ -166,8 +174,8 @@ const BoardProvider = ({ children }) => {
 
   // handler for jab mouse click hoga
   const boardMouseDownHandler = (event, toolboxState) => {
+    if (boardState.toolActionType === TOOL_ACTION_TYPES.WRITING) return;
     const { clientX, clientY } = event;
-
     // if out current item is eraser then we will dispatch different function
     if (boardState.activeToolItem === TOOL_ITEMS.ERASER) {
       dispatchBoardAction({
@@ -195,6 +203,8 @@ const BoardProvider = ({ children }) => {
 
   // handler for jab mouser cursor ko move kareenge fro real time position of cursor
   const boardMouseMoveHandler = (event) => {
+    if (boardState.toolActionType === TOOL_ACTION_TYPES.WRITING) return; // agar writing state mei hai toh move se koi fark nahi padega
+
     const { clientX, clientY } = event;
 
     if (boardState.toolActionType === TOOL_ACTION_TYPES.DRAWING) {
@@ -220,10 +230,20 @@ const BoardProvider = ({ children }) => {
 
   // the moment i leave the mouse cursor it should stop updating
   const boardMouseUpHandler = () => {
+    if (boardState.toolActionType === TOOL_ACTION_TYPES.WRITING) return;
     dispatchBoardAction({
       type: BOARD_ACTIONS.CHANGE_ACTION_TYPE,
       payload: {
         actionType: TOOL_ACTION_TYPES.NONE,
+      },
+    });
+  };
+
+  const textAreaBlurHandler = (text, toolboxState) => {
+    dispatchBoardAction({
+      type: BOARD_ACTIONS.CHANGE_TEXT,
+      payload: {
+        text,
       },
     });
   };
@@ -236,6 +256,7 @@ const BoardProvider = ({ children }) => {
     boardMouseDownHandler,
     boardMouseMoveHandler,
     boardMouseUpHandler,
+    textAreaBlurHandler,
   };
 
   return (
