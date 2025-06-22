@@ -111,6 +111,19 @@ const boardReducer = (state, action) => {
       }
     }
 
+    case BOARD_ACTIONS.DRAW_UP: {
+      const elementsCopy = [...state.elements]; // ye ho gaye element ki copy
+      const newHistory = state.history.slice(0, state.index + 1); // so that when i am coming back and drawing new stuff -> remove uske aage ke sare state
+
+      // now push it into the history
+      newHistory.push(elementsCopy);
+
+      return {
+        history: newHistory,
+        index: state.index + 1,
+      };
+    }
+
     //eraser case handle
     case BOARD_ACTIONS.ERASE: {
       const { clientX, clientY } = action.payload;
@@ -132,11 +145,15 @@ const boardReducer = (state, action) => {
       const index = state.elements.length - 1;
       const newElements = [...state.elements];
       newElements[index].text = action.payload.text;
+      const newHistory = state.history.slice(0, state.index + 1);
+      newHistory.push(newElements);
 
       return {
         ...state,
         toolActionType: TOOL_ACTION_TYPES.NONE,
         elements: newElements,
+        history: newHistory, // history ko update kar de
+        index: state.index + 1,
       };
     }
 
@@ -149,6 +166,8 @@ const initialBoardState = {
   activeToolItem: TOOL_ITEMS.BRUSH,
   elements: [],
   toolActionType: TOOL_ACTION_TYPES.NONE,
+  history: [[]], // for undo and redo
+  index: 0,
 };
 
 // children prop always chaiye hoga provider mei
@@ -231,6 +250,11 @@ const BoardProvider = ({ children }) => {
   // the moment i leave the mouse cursor it should stop updating
   const boardMouseUpHandler = () => {
     if (boardState.toolActionType === TOOL_ACTION_TYPES.WRITING) return;
+    if (boardState.toolActionType === TOOL_ACTION_TYPES.DRAWING) {
+      dispatchBoardAction({
+        type: BOARD_ACTIONS.DRAW_UP,
+      });
+    }
     dispatchBoardAction({
       type: BOARD_ACTIONS.CHANGE_ACTION_TYPE,
       payload: {
@@ -248,6 +272,18 @@ const BoardProvider = ({ children }) => {
     });
   };
 
+  const boardUndohandler = () => {
+    dispatchBoardAction({
+      type: BOARD_ACTIONS.UNDO,
+    });
+  };
+
+  const boardRedohandler = () => {
+    dispatchBoardAction({
+      type: BOARD_ACTIONS.REDO,
+    });
+  };
+
   const boardContextValue = {
     activeToolItem: boardState.activeToolItem,
     elements: boardState.elements,
@@ -257,6 +293,8 @@ const BoardProvider = ({ children }) => {
     boardMouseMoveHandler,
     boardMouseUpHandler,
     textAreaBlurHandler,
+    undo: boardUndohandler,
+    redo: boardRedohandler,
   };
 
   return (
