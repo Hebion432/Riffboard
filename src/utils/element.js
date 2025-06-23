@@ -143,6 +143,26 @@ export const isPointNearElement = (element, pointX, pointY) => {
       const context = document.getElementById("canvas").getContext("2d");
       return context.isPointInPath(element.path, pointX, pointY);
     }
+
+    case TOOL_ITEMS.TEXT: {
+      const context = document.getElementById("canvas").getContext("2d");
+
+      context.font = `${element.size}px Caveat`;
+      context.fillStyle = element.stroke;
+      const textWidth = context.measureText(element.text).width;
+      const textHeight = parseInt(element.size);
+      context.restore(); //is used to restore the drawing context to a previously saved state.
+      const x2 = x1 + textWidth,
+        y2 = y1 + textHeight;
+
+      //delete the text if the erase goes on any of this point
+      return (
+        isPointCloseToLine(x1, y1, x2, y1, pointX, pointY) ||
+        isPointCloseToLine(x2, y1, x2, y2, pointX, pointY) ||
+        isPointCloseToLine(x2, y2, x1, y2, pointX, pointY) ||
+        isPointCloseToLine(x1, y2, x1, y1, pointX, pointY)
+      );
+    }
     default:
       throw new Error("Tool Not Recognised");
   }
