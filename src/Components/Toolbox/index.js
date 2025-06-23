@@ -29,6 +29,15 @@ const Toolbox = () => {
         <div className={classes.selectOptionContainer}>
           <div className={classes.toolBoxLabel}>Stroke Color</div>
           <div className={classes.colorsContainer}>
+            {/* color picker */}
+            <div>
+              <input
+                className={classes.colorPicker}
+                type="color"
+                value={strokeColor}
+                onChange={(e) => changeStroke(activeToolItem, e.target.value)}
+              ></input>
+            </div>
             {/* here we want to map on all the colors but it's an object so we will map on it's keys */}
             {Object.keys(COLORS).map((k) => {
               return (
@@ -51,6 +60,34 @@ const Toolbox = () => {
         <div className={classes.selectOptionContainer}>
           <div className={classes.toolBoxLabel}>Fill Color</div>
           <div className={classes.colorsContainer}>
+            {fillColor === null ? (
+              <div
+                className={cx(classes.colorPicker, classes.noFillColorBox)}
+                onClick={() => {
+                  changeFill(activeToolItem, COLORS.BLACK);
+                }}
+              ></div>
+            ) : (
+              <div>
+                {/* color picker */}
+                <input
+                  className={classes.colorPicker}
+                  type="color"
+                  value={fillColor}
+                  onChange={(e) => changeFill(activeToolItem, e.target.value)}
+                ></input>
+              </div>
+            )}
+
+            {/* adding a null color */}
+            <div
+              className={cx(classes.colorBox, classes.noFillColorBox, {
+                [classes.activeColorBox]: fillColor === null,
+              })}
+              onClick={() => {
+                changeFill(activeToolItem, null);
+              }}
+            ></div>
             {/* here we want to map on all the colors but it's an object so we will map on it's keys */}
             {Object.keys(COLORS).map((k) => {
               return (
