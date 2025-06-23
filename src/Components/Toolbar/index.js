@@ -13,6 +13,7 @@ import {
   FaFont,
   FaRedoAlt,
   FaUndoAlt,
+  FaDownload,
 } from "react-icons/fa";
 import { LuRectangleHorizontal } from "react-icons/lu";
 import boardContext from "../../store/board-context";
@@ -21,6 +22,16 @@ import { TOOL_ITEMS } from "../../constants";
 function Toolbar() {
   const { activeToolItem, changeToolHandler, undo, redo } =
     useContext(boardContext); // now ye dono boardContext mei define hone chaiye and in function ka implementaion BoardProvider.js mei hone chaiye and pass them in value field then jaha bhi mujhe use karna hai wrap it's component (e.g toolbar ) in BoardProvider and use these function inside that component
+
+  const handleDownloadClick = () => {
+    //exact yahi tarika hai download karne ka
+    const canvas = document.getElementById("canvas");
+    const data = canvas.toDataURL("imgage/jpeg"); //get the data
+    const anchor = document.createElement("a"); // make an anchor tag
+    anchor.href = data; // give data as href
+    anchor.download = "board.jpeg";
+    anchor.click();
+  };
 
   return (
     <div className={classes.container}>
@@ -85,6 +96,9 @@ function Toolbar() {
       </div>
       <div className={classes.toolItem} onClick={redo}>
         <FaRedoAlt />
+      </div>
+      <div className={classes.toolItem} onClick={handleDownloadClick}>
+        <FaDownload />
       </div>
     </div>
   );
