@@ -122,9 +122,7 @@ function Board() {
             fontSize: `${elements[elements.length - 1]?.size}px`,
             color: elements[elements.length - 1]?.stroke,
           }} // ye based on maine kaha click kiya tha
-          onBlur={(event) =>
-            textAreaBlurHandler(event.target.value, toolboxState)
-          }
+          onBlur={(event) => textAreaBlurHandler(event.target.value)}
         />
       )}
       <canvas
