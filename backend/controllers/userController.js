@@ -1,4 +1,5 @@
 const Users = require("../models/userModel");
+const jwt = require("jsonwebtoken");
 
 // Helper function to handle errors in controllers
 const handleControllerError = (res, error) => {
@@ -12,8 +13,15 @@ const createUser = async (req, res) => {
     const { name, email, password } = req.body;
     const newUser = await Users.register(name, email, password);
 
+    // Generate a token after registration
+    const token = jwt.sign(
+      { userId: newUser._id, email: newUser.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
     // Send the new user and token as response
-    res.status(201).json({ newUser });
+    res.status(201).json({ user: newUser, token });
   } catch (error) {
     handleControllerError(res, error);
   }
@@ -30,4 +38,14 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { createUser, loginUser };
+// Get user profile (JWT authentication required -> cheked thoruouh the middleware)
+const getUserProfile = async (req, res) => {
+  try {
+    const user = await Users.getUser(req.user.userId);
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(401).json({ message: error.message });
+  }
+};
+
+module.exports = { createUser, loginUser, getUserProfile };

@@ -1,6 +1,8 @@
+require("dotenv").config();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const validator = require("validator");
+const jwt = require("jsonwebtoken");
 
 //schema
 const userSchema = new mongoose.Schema(
@@ -65,6 +67,20 @@ userSchema.statics.findUserByEmail = async function (email) {
   return user;
 };
 
+userSchema.statics.generateToken = function (user) {
+  return jwt.sign(
+    // Payload that contains the user's ID and email
+    { userId: user._id, email: user.email },
+    // Secret to sign the token with
+    process.env.JWT_SECRET,
+    // Options for the token
+    {
+      // The token will expire in 1 day
+      expiresIn: "3d",
+    }
+  );
+};
+
 //static functions
 userSchema.statics.register = async function (name, email, password) {
   try {
@@ -123,7 +139,11 @@ userSchema.statics.login = async function (email, password) {
     }
 
     // Login successful
-    return user;
+    // Generate a JWT token for the user
+    const token = this.generateToken(user);
+
+    // Return the JWT token
+    return { message: "Successfully logged in!", token };
   } catch (error) {
     throw new Error(`Error logging in: ${error.message}`);
   }
