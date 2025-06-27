@@ -19,4 +19,15 @@ const createUser = async (req, res) => {
   }
 };
 
-module.exports = { createUser };
+// Login user
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await Users.login(email, password);
+    res.status(200).json(user);
+  } catch (error) {
+    handleControllerError(res, error);
+  }
+};
+
+module.exports = { createUser, loginUser };
