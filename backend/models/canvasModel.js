@@ -71,6 +71,31 @@ canvasSchema.statics.createCanvas = async function (email, name) {
   }
 };
 
-const canvasModel = mongoose.model("Canvas", canvasSchema);
+canvasSchema.statics.loadCanvas = async function (email, canvasId) {
+  const user = await Users.findOne({ email });
+  try {
+    // Find the user by email
+    if (!user) {
+      throw new Error("User not found");
+    }
 
+    // Find the canvas with the id canvasID that the user owns or has access to
+    const canvas = await this.findOne({
+      _id: canvasId,
+      $or: [{ owner: user._id }, { shared_with: user._id }],
+    });
+
+    // If the canvas was not found, throw an error
+    if (!canvas) {
+      throw new Error("Canvas not found");
+    }
+
+    // Return the loaded canvas
+    return canvas;
+  } catch (error) {
+    throw new Error(`Error loading canvas: ${error.message}`);
+  }
+};
+
+const canvasModel = mongoose.model("Canvas", canvasSchema);
 module.exports = canvasModel;
