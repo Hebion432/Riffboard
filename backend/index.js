@@ -1,6 +1,7 @@
 const express = require("express");
 const connectToDatabase = require("./routes/db");
 const userRoutes = require("./routes/userRoutes.js");
+const canvasRoutes = require("./routes/canvasRoute.js");
 const cors = require("cors");
 const app = express();
 
@@ -15,6 +16,7 @@ connectToDatabase();
 
 //Routes
 app.use("/users", userRoutes);
+app.use("/canvas", canvasRoutes);
 
 // Start server
 app.listen(PORT, () => {

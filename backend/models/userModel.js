@@ -76,7 +76,7 @@ userSchema.statics.generateToken = function (user) {
     // Options for the token
     {
       // The token will expire in 1 day
-      expiresIn: "3d",
+      expiresIn: "9h",
     }
   );
 };

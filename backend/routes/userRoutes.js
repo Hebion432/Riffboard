@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const authenticationMiddleware = require("../middleware/authenticateTokens");
+const authenticationMiddleware = require("../middleware/authenticationMiddleware");
 
 const {
   createUser,
