@@ -1,20 +1,25 @@
-import Toolbar from "./Components/Toolbar";
-import Toolbox from "./Components/Toolbox";
-import Board from "./Components/Boards";
-import BoardProvider from "./store/BoardProvider";
-import ToolBoxProvider from "./store/ToolboxProvider";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import Login from "./Pages/Login.js";
+import Profile from "./Pages/Profile.js";
 
 function App() {
+  const token = localStorage.getItem("token");
+
   return (
-    <div className="App">
-      <BoardProvider>
-        <ToolBoxProvider>
-          <Toolbar />
-          <Board />
-          <Toolbox />
-        </ToolBoxProvider>
-      </BoardProvider>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route
+          path="/profile"
+          element={token ? <Profile /> : <Navigate to="/" />}
+        />
+      </Routes>
+    </Router>
   );
 }
 
