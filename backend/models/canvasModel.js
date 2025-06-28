@@ -47,6 +47,30 @@ canvasSchema.statics.getAllCanvases = async function (email) {
   }
 };
 
+canvasSchema.statics.createCanvas = async function (email, name) {
+  const user = await Users.findOne({ email });
+  try {
+    // Find the user by email
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Create the new canvas
+    const canvas = new this({
+      owner: user._id,
+      name,
+      elements: [],
+      shared_with: [],
+    });
+
+    // Save the new canvas
+    const newCanvas = await canvas.save();
+    return newCanvas;
+  } catch (error) {
+    throw new Error(`Error creating canvas: ${error.message}`);
+  }
+};
+
 const canvasModel = mongoose.model("Canvas", canvasSchema);
 
-module.export = canvasModel;
+module.exports = canvasModel;

@@ -12,4 +12,15 @@ const getAllCanvases = async (req, res) => {
   }
 };
 
-module.exports = getAllCanvases;
+const createCanvas = async (req, res) => {
+  const { name } = req.body;
+  const email = req.user.email; // Get the email from the token decoded in the authentication middleware
+  try {
+    const canvas = await Canvas.createCanvas(email, name);
+    res.status(201).json(canvas);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+module.exports = { getAllCanvases, createCanvas };
