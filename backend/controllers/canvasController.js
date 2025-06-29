@@ -41,4 +41,23 @@ const loadCanvas = async (req, res) => {
   }
 };
 
-module.exports = { getAllCanvases, createCanvas, loadCanvas };
+const updateCanvas = async (req, res) => {
+  try {
+    const canvasId = req.params.id;
+    const email = req.user.email;
+    const { elements } = req.body;
+
+    const canvas = await Canvas.updateCanvas(email, canvasId, elements);
+    if (!canvas) {
+      return res.status(404).json({ error: "Canvas not found" });
+    }
+
+    res.status(200).json(canvas);
+  } catch (error) {
+    res
+      .status(400)
+      .json({ error: "Failed to update canvas", details: error.message });
+  }
+};
+
+module.exports = { getAllCanvases, createCanvas, loadCanvas, updateCanvas };

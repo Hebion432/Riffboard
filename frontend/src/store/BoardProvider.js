@@ -185,21 +185,25 @@ const boardReducer = (state, action) => {
   }
 };
 
-const initialBoardState = {
-  activeToolItem: TOOL_ITEMS.BRUSH,
-  elements: [],
-  toolActionType: TOOL_ACTION_TYPES.NONE,
-  history: [[]], // for undo and redo
-  index: 0,
-};
-
 // children prop always chaiye hoga provider mei
-const BoardProvider = ({ children }) => {
+const BoardProvider = ({ children, initialCanvas }) => {
   // takes a reducer function and an initial state, returning the current state and a dispatch function.
+
+  // initialcanvas is the initial state of the board, which will be passed from the CanvasPage component backend
+  // it will be used to set the initial elements and history of the board
+  const initialBoardState = {
+    activeToolItem: TOOL_ITEMS.BRUSH,
+    toolActionType: TOOL_ACTION_TYPES.NONE,
+    elements: initialCanvas?.elements || [],
+    history: [initialCanvas?.elements || []], // for undo and redo
+    index: 0,
+  };
   const [boardState, dispatchBoardAction] = useReducer(
     boardReducer,
     initialBoardState
   );
+
+  console.log("Board State: ", initialBoardState);
 
   // now instead of making both these state i will handle them with useReducer
   // const [activeToolItem, setActiveToolItem] = useState(TOOL_ITEMS.LINE);

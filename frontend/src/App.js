@@ -10,7 +10,6 @@ import CanvasPage from "./Pages/CanvasPage.js"; // Import your new Canvas page
 
 function App() {
   const token = localStorage.getItem("token");
-  console.log("Token in App:", token);
   return (
     <Router>
       <Routes>

@@ -37,7 +37,7 @@ function CanvasPage() {
 
   return (
     <div className="App">
-      <BoardProvider>
+      <BoardProvider initialCanvas={canvas}>
         <ToolBoxProvider>
           <Toolbar />
           <Board />

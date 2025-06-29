@@ -3,6 +3,7 @@ import rough from "roughjs";
 import boardContext from "../../store/board-context";
 import { TOOL_ACTION_TYPES, TOOL_ITEMS } from "../../constants";
 import toolboxContext from "../../store/toolbox-context";
+import updateCanvas from "../../utils/api";
 
 import classes from "./index.module.css";
 
@@ -107,6 +108,8 @@ function Board() {
   // when we relaese the mouse cursor
   const handleMouseUp = () => {
     boardMouseUpHandler();
+    const canvasId = window.location.pathname.split("/").pop(); // get the canvas id
+    updateCanvas(canvasId, elements);
   };
 
   return (

@@ -63,8 +63,8 @@ function Profile() {
           },
         }
       );
-      setNewCanvasName("");
-      fetchCanvases(); // Refresh list
+      setNewCanvasName(""); // calling it will set the input field to empty
+      fetchCanvases(); // Refresh list and it will rerender all the canvases
     } catch (err) {
       console.error("Error creating canvas", err);
     }
